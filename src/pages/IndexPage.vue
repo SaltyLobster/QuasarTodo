@@ -1,43 +1,24 @@
 <script setup>
-import { ref, computed } from 'vue'
-
-
-class TaskList {
-  constructor(name) {
-    this.name = name
-    this.tasks = ref([])
-    this.idCounter = 0
-  }
-}
+import { ref, computed, watch } from 'vue';
+import { useQuasar } from 'quasar';
 
 
 let id = 0
 
 const showCompleted = ref(true)
 const taskText = ref('')
-const taskList = ref([
-  {
-    id: id++,
-    task: "Learn JS",
-    isCompleted: false
-  },
-  {
-    id: id++,
-    task: "Learn Quasar",
-    isCompleted: false
-  },
-  {
-    id: id++,
-    task: "Learn Vue",
-    isCompleted: true
-  },
-])
+const taskList = ref([])
 
-const taskLists = ref([
-  new TaskList("Work"),
-  new TaskList("Personal"),
-  new TaskList("Hobbies"),
-]);
+const $q = useQuasar()
+
+const savedList = $q.localStorage.getItem('taskList');
+taskList.value = savedList ? JSON.parse(savedList) : [];
+
+watch(taskList, (newTaskList) => {
+  $q.localStorage.set('taskList', JSON.stringify(newTaskList));
+}, { deep: true });
+
+const isTaskListEmpty = computed(() => taskList.value.length === 0);
 
 const filteredTasks = computed(() => {
   return showCompleted.value
@@ -45,26 +26,33 @@ const filteredTasks = computed(() => {
     : taskList.value.filter(task => !task.isCompleted);
 });
 
-
- function addTask() {
+function addTask() {
   if (taskText.value.trim() !== '') {
     taskList.value.push({
       id: id++,
       task: taskText.value,
       isCompleted: false
-        });
-        taskText.value = ''
-      }
-    }
-    function removeTask(taskId) {
-      taskList.value = taskList.value.filter(task => task.id != taskId)
-    }
-    function toggleCompleted(task) {
-      task.isCompleted = !task.isCompleted
-    }
-    function toggleShowCompleted() {
-      showCompleted.value = !showCompleted.value
-    }
+    });
+    taskText.value = '';
+  } else {
+    $q.notify({
+      type: 'negative',
+      message: 'Task cannot be empty!',
+    });
+  }
+}
+
+function removeTask(taskId) {
+    taskList.value = taskList.value.filter(task => task.id != taskId)
+  }
+
+function toggleCompleted(task) {
+    task.isCompleted = !task.isCompleted
+  }
+
+function toggleShowCompleted() {
+    showCompleted.value = !showCompleted.value
+  }
 
 
 </script>
@@ -83,7 +71,11 @@ const filteredTasks = computed(() => {
           filled
           />
       </div>
-        <q-list class="task-list" separator>
+
+        <!-- Show message if task list is empty -->
+      <h3 v-if="isTaskListEmpty">Start adding tasks</h3>
+
+        <q-list v-else class="task-list" separator>
           <q-item
           v-for="task in filteredTasks"
           clickable
@@ -100,6 +92,7 @@ const filteredTasks = computed(() => {
               />
           </q-item>
         </q-list>
+
         <q-btn class="button" @click="toggleShowCompleted">
           <span v-if="showCompleted==true">Hide completed</span>
           <span v-else>Show completed</span>
