@@ -98,6 +98,8 @@ $warning   : #ec6666;
   }
   .task-list {
   margin-top: 10px; /* Space between input and list */
+  margin-left: 20%;
+  margin-right: 20%;
   background-color: $secondary;
   border-radius: 20px;
 }
@@ -109,6 +111,7 @@ $warning   : #ec6666;
 }
 .button {
   margin-top: 10px;
+  margin-left: 20%;
   background-color: $secondary;
 }
 .q-item {
