@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh lpr fFf">
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
         <q-btn
@@ -14,7 +14,13 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" elevated>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      side="left"
+      elevated
+      :width="250"
+      :breakpoint="1024"
+    >
       <q-scroll-area class="fit">
         <div class="q-pa-md">
           <div class="text-h6 q-mb-md">My Lists</div>

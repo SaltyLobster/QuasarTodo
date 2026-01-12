@@ -12,16 +12,22 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary: #5b91ce;
-$secondary: #5582bde3;
-$accent: #aa6a6a65;
+// VS Code Theme Colors - One Dark Pro style
+// Primary: VS Code Blue
+$primary: #007acc;
+// Secondary: VS Code Purple
+$secondary: #646695;
+// Accent: VS Code Green
+$accent: #6a9955;
 
-$dark: #1d1d1d;
-$dark-page: #121212;
-$gray: #8d8d8dd0;
-$white: #e2e2e2;
+// Dark Theme Backgrounds (VS Code One Dark)
+$dark: #1e1e1e;
+$dark-page: #252526;
+$gray: #6a6a6a;
+$white: #d4d4d4;
 
-$positive: #21ba45;
-$negative: #8a8888;
-$info: #31ccec;
-$warning: #ec6666;
+// Status Colors (VS Code palette)
+$positive: #6a9955; // Green
+$negative: #f48771; // Red/Orange
+$info: #4fc1ff; // Light Blue
+$warning: #dcdcaa; // Yellow

@@ -39,7 +39,6 @@ function openDateTimeDialog() {
       outlined
       type="text"
       placeholder="Add a new task..."
-      label="Task"
       dense
       class="full-width"
     >
