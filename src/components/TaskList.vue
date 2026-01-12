@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from "vue";
+import { ref, computed } from "vue";
+import TimePickerScroll from "./TimePickerScroll.vue";
 
 const props = defineProps({
   tasks: {
@@ -12,11 +13,12 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits([
-  "toggle-task",
-  "remove-task",
-  "toggle-show-completed",
-]);
+const emit = defineEmits(["toggle-task", "remove-task", "edit-task-reminder"]);
+
+const showEditDialog = ref(false);
+const editingTask = ref(null);
+const editDate = ref("");
+const editTime = ref("");
 
 const isTaskListEmpty = computed(() => props.tasks.length === 0);
 
@@ -33,6 +35,38 @@ function removeTask(taskId) {
 function toggleCompleted(task) {
   emit("toggle-task", task);
 }
+
+function openEditReminder(task) {
+  editingTask.value = task;
+  editDate.value = task.reminder?.date || "";
+  editTime.value = task.reminder?.time || "";
+  showEditDialog.value = true;
+}
+
+function saveReminder() {
+  if (editingTask.value) {
+    emit("edit-task-reminder", editingTask.value.id, {
+      date: editDate.value,
+      time: editTime.value,
+    });
+    showEditDialog.value = false;
+  }
+}
+
+function removeReminder(taskId) {
+  emit("edit-task-reminder", taskId, null);
+}
+
+function formatDateTime(date, time) {
+  if (!date || !time) return null;
+  const d = new Date(`${date}T${time}`);
+  return d.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 </script>
 
 <template>
@@ -46,8 +80,6 @@ function toggleCompleted(task) {
       <q-item
         v-for="task in filteredTasks"
         :key="task.id"
-        clickable
-        @click="toggleCompleted(task)"
         :class="{ 'bg-grey-2': task.isCompleted }"
       >
         <q-item-section avatar>
@@ -61,23 +93,75 @@ function toggleCompleted(task) {
         <q-item-section>
           <q-item-label
             :class="{ 'text-strikethrough text-grey-6': task.isCompleted }"
+            @click="toggleCompleted(task)"
+            class="cursor-pointer"
           >
             {{ task.task }}
+          </q-item-label>
+          <q-item-label v-if="task.reminder" caption class="text-info">
+            <q-icon name="notifications" size="xs" class="q-mr-xs" />
+            {{ formatDateTime(task.reminder.date, task.reminder.time) }}
           </q-item-label>
         </q-item-section>
 
         <q-item-section side>
-          <q-btn
-            flat
-            dense
-            round
-            icon="delete"
-            color="negative"
-            size="sm"
-            @click.stop="removeTask(task.id)"
-          />
+          <div class="row no-wrap q-gutter-xs">
+            <q-btn
+              flat
+              dense
+              round
+              icon="schedule"
+              color="info"
+              size="sm"
+              @click.stop="openEditReminder(task)"
+            />
+            <q-btn
+              flat
+              dense
+              round
+              icon="delete"
+              color="negative"
+              size="sm"
+              @click.stop="removeTask(task.id)"
+            />
+          </div>
         </q-item-section>
       </q-item>
     </q-list>
   </q-card>
+
+  <!-- Edit Reminder Dialog -->
+  <q-dialog v-model="showEditDialog">
+    <q-card style="min-width: 400px">
+      <q-card-section>
+        <div class="text-h6">Edit Reminder</div>
+      </q-card-section>
+
+      <q-card-section class="q-gutter-md">
+        <q-input v-model="editDate" type="date" label="Date" outlined dense />
+        <TimePickerScroll v-model="editTime" />
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="Cancel" color="primary" v-close-popup />
+        <q-btn
+          v-if="editingTask?.reminder"
+          flat
+          label="Remove"
+          color="negative"
+          @click="
+            removeReminder(editingTask.id);
+            showEditDialog = false;
+          "
+        />
+        <q-btn
+          flat
+          label="Save"
+          color="primary"
+          @click="saveReminder"
+          :disable="!editDate || !editTime"
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>

@@ -110,29 +110,31 @@ defineOptions({
   name: "MainLayout",
 });
 
+const STORAGE_KEY = "taskLists";
 const leftDrawerOpen = ref(false);
 const showCreateDialog = ref(false);
-const taskLists = ref([]);
-const selectedListId = ref(null);
 const newListName = ref("");
 
-// Load lists from localStorage
-const savedLists = localStorage.getItem("taskLists");
-if (savedLists) {
-  taskLists.value = JSON.parse(savedLists);
-  if (taskLists.value.length > 0) {
-    selectedListId.value = taskLists.value[0].id;
+// Initialize lists from localStorage
+const taskLists = ref(initializeLists());
+const selectedListId = ref(
+  taskLists.value.length > 0 ? taskLists.value[0].id : null
+);
+
+function initializeLists() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    return JSON.parse(saved);
   }
-} else {
-  // Create default list
+
+  // Create default list on first load
   const defaultList = {
     id: Date.now(),
     name: "My Tasks",
     tasks: [],
   };
-  taskLists.value.push(defaultList);
-  selectedListId.value = defaultList.id;
-  saveLists();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([defaultList]));
+  return [defaultList];
 }
 
 function toggleLeftDrawer() {
@@ -156,25 +158,24 @@ function deleteList(listId) {
 }
 
 function createNewList() {
-  if (newListName.value.trim() === "") return;
+  if (!newListName.value.trim()) return;
 
-  const newList = {
+  taskLists.value.push({
     id: Date.now(),
     name: newListName.value.trim(),
     tasks: [],
-  };
-  taskLists.value.push(newList);
-  selectedListId.value = newList.id;
+  });
+  selectedListId.value = taskLists.value[taskLists.value.length - 1].id;
   newListName.value = "";
   showCreateDialog.value = false;
   saveLists();
 }
 
 function saveLists() {
-  localStorage.setItem("taskLists", JSON.stringify(taskLists.value));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(taskLists.value));
 }
 
-// Provide the lists and selected list to child components
+// Provide to child components
 provide("taskLists", taskLists);
 provide("selectedListId", selectedListId);
 provide("saveLists", saveLists);
