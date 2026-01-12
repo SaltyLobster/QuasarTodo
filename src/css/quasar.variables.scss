@@ -12,19 +12,19 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary   : #9fc2e6;
-$secondary : #5582bde3;
-$accent    : #aa6a6a65;
+$primary: #5b91ce;
+$secondary: #5582bde3;
+$accent: #aa6a6a65;
 
-$dark      : #1D1D1D;
-$dark-page : #121212;
-$gray      : #8d8d8dd0;
-$white     : #e2e2e2;
+$dark: #1d1d1d;
+$dark-page: #121212;
+$gray: #8d8d8dd0;
+$white: #e2e2e2;
 
-$positive  : #21BA45;
-$negative  : #8a8888;
-$info      : #31CCEC;
-$warning   : #ec6666;
+$positive: #21ba45;
+$negative: #8a8888;
+$info: #31ccec;
+$warning: #ec6666;
 .form__group {
   position: relative;
   padding: 15px 0 0;
@@ -72,16 +72,16 @@ $warning   : #ec6666;
     transition: 0.2s;
     font-size: 1rem;
     color: $primary;
-    font-weight:700;
+    font-weight: 700;
   }
   padding-bottom: 6px;
   font-weight: 700;
   border-width: 3px;
-  border-image: linear-gradient(to right, $primary,$secondary);
+  border-image: linear-gradient(to right, $primary, $secondary);
   border-image-slice: 1;
 }
 .body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   width: 100%;
   flex-direction: column;
   justify-content: center;
@@ -95,8 +95,8 @@ $warning   : #ec6666;
   margin: 0 auto; /* Center the container horizontally */
   padding-top: 20px; /* Add some padding at the top */
   box-sizing: border-box; /* Include padding in the width */
-  }
-  .task-list {
+}
+.task-list {
   margin-top: 10px; /* Space between input and list */
   margin-left: 20%;
   margin-right: 20%;
