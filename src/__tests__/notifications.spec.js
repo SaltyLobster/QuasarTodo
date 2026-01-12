@@ -6,10 +6,10 @@ class MockNotification {
     this.title = title;
     this.options = options;
   }
-
-  static permission = "granted";
-  static requestPermission = vi.fn(() => Promise.resolve("granted"));
 }
+
+MockNotification.permission = "granted";
+MockNotification.requestPermission = vi.fn(() => Promise.resolve("granted"));
 
 global.Notification = MockNotification;
 
